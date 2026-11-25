@@ -34,67 +34,7 @@ Thumbs.db
 # Spark, Kafka & Dữ liệu Runtime (Tự sinh khi chạy)
 # ==========================================
 # Checkpoints của Spark (hàng nghìn file delta/offset sinh ra mỗi 5s)
-# ==========================================
-# Python & Môi trường ảo
-# ==========================================
-.venv/
-venv/
-ENV/
-env/
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-
-# ==========================================
-# Testing & Cache
-# ==========================================
-.pytest_cache/
-.coverage
-htmlcov/
-.mypy_cache/
-.ruff_cache/
-
-# ==========================================
-# IDE & Hệ điều hành
-# ==========================================
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-Thumbs.db
-
-# ==========================================
-# Spark, Kafka & Dữ liệu Runtime (Tự sinh khi chạy)
-# ==========================================
-# Checkpoints của Spark (hàng nghìn file delta/offset sinh ra mỗi 5s)
 data/checkpoints/
-
-# Luồng Parquet nến và dự báo sinh ra liên tục
-data/stream/
-
-# Dữ liệu tạm của các bài đo Benchmark
-data/bench/
-
-# Dữ liệu nến thô tải từ Yahoo Finance / Kaggle
-data/raw/
-
-# Metrics runtime của Producer
-data/metrics/
-
-# Spark & Derby database runtime
-spark-warehouse/
-metastore_db/
-derby.log
-*.crc
-_tmp-*
-
-# ==========================================
-# Logs
-# ==========================================
-*.log
 
 # Luồng Parquet nến và dự báo sinh ra liên tục
 data/stream/

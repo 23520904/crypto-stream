@@ -4,3 +4,8 @@ BTC,univariate,"ARIMA(1,0,1)",1,0.1558,0.0,,,,
 BTC,univariate,BD-LSTM,30,0.8161,0.0208,0.0327,23.958,lệch,train
 BTC,univariate,MLP,30,0.487,0.0437,,,,train
 BTC,univariate,persistence,1,0.1445,0.0,,,,
+ETH,multivariate_star,Conv-LSTM,10,0.2195,0.0097,0.021,9.454,lệch,train
+ETH,univariate,"ARIMA(1,0,1)",1,0.1216,0.0,,,,
+ETH,univariate,BD-LSTM,10,0.4001,0.015,0.0388,9.313,lệch,train
+ETH,univariate,MLP,10,0.256,0.0216,,,,train
+ETH,univariate,persistence,1,0.1202,0.0,,,,
