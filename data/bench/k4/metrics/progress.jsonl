@@ -1,1 +1,0 @@
-{"batch_id": 0, "timestamp": "2026-11-25T08:59:42.921Z", "numInputRows": 98400, "inputRowsPerSecond": 0.0, "processedRowsPerSecond": 5937.726285300507, "durationMs": {"addBatch": 14010, "commitOffsets": 72, "getBatch": 31, "latestOffset": 1167, "queryPlanning": 1172, "triggerExecution": 16571, "walCommit": 80}}

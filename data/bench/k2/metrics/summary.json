@@ -1,9 +1,0 @@
-{
-  "master": "local[2]",
-  "cores": 2,
-  "topic": "ticks_bench",
-  "ticks_total": 98400,
-  "processing_wall_s": 17.495,
-  "throughput_ticks_per_s": 5624.464132609317,
-  "total_runtime_s": 148.025465965271
-}
