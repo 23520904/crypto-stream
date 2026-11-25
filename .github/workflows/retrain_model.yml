@@ -69,3 +69,63 @@ jobs:
             git push origin HEAD:${{ github.ref }}
             echo "Đã đẩy thành công các model artifacts mới lên GitHub!"
           fi
+
+      - name: 🔔 Gửi thông báo kết quả qua Discord Webhook
+        if: always()
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          JOB_STATUS: ${{ job.status }}
+          RUN_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        run: |
+          python3 -c '
+          import os, json, urllib.request
+
+          webhook_url = os.environ.get("DISCORD_WEBHOOK", "").strip()
+          if not webhook_url:
+              print("⚠️ Không tìm thấy biến bí mật DISCORD_WEBHOOK, bỏ qua bước gửi thông báo.")
+              exit(0)
+
+          status = os.environ.get("JOB_STATUS", "unknown")
+          run_url = os.environ.get("RUN_URL", "")
+          repo = os.environ.get("GITHUB_REPOSITORY", "23520904/crypto-stream")
+          ref = os.environ.get("GITHUB_REF_NAME", "main")
+
+          is_success = (status == "success")
+          color = 3066993 if is_success else 15158332 # Xanh lá nếu Success, Đỏ nếu Fail
+          title = "✅ [MLOps] Huấn Luyện Mô Hình Thành Công!" if is_success else "❌ [MLOps] Tiến Trình Huấn Luyện Thất Bại!"
+          desc = (
+              "Tiến trình Retrain định kỳ đã hoàn tất xuất sắc. Dữ liệu nến mới nhất và trọng số mô hình (.pt) đã được lưu trữ."
+              if is_success else
+              "Tiến trình Retrain hoặc Kiểm thử tự động (pytest) gặp lỗi. Vui lòng kiểm tra log chi tiết."
+          )
+
+          payload = {
+              "username": "CryptoStream MLOps Bot",
+              "avatar_url": "https://raw.githubusercontent.com/github/explore/main/topics/pytorch/pytorch.png",
+              "embeds": [{
+                  "title": title,
+                  "description": desc,
+                  "url": run_url,
+                  "color": color,
+                  "fields": [
+                      {"name": "📌 Repository", "value": f"[{repo}](https://github.com/{repo})", "inline": True},
+                      {"name": "🌿 Nhánh", "value": f"`{ref}`", "inline": True},
+                      {"name": "📊 Cặp giao dịch", "value": "BTC-USD & ETH-USD", "inline": True},
+                      {"name": "🤖 Mô hình cập nhật", "value": "BD-LSTM, Conv-LSTM, MLP, ARIMA", "inline": True},
+                      {"name": "🔗 Link xem Log", "value": f"[Bấm vào đây để mở GitHub Actions Log]({run_url})", "inline": False}
+                  ],
+                  "footer": {"text": "Crypto-Stream Pipeline • MLOps Automated Notification"}
+              }]
+          }
+
+          req = urllib.request.Request(
+              webhook_url,
+              data=json.dumps(payload).encode("utf-8"),
+              headers={"Content-Type": "application/json", "User-Agent": "GitHub-Actions-Bot"}
+          )
+          try:
+              with urllib.request.urlopen(req) as resp:
+                  print(f"✅ Đã gửi thông báo Discord thành công! Mã phản hồi: {resp.status}")
+          except Exception as e:
+              print(f"⚠️ Gửi webhook thất bại: {e}")
+          '
