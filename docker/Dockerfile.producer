@@ -1,0 +1,9 @@
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements-producer.txt .
+RUN pip install --no-cache-dir -r requirements-producer.txt
+COPY common ./common
+COPY ingestion ./ingestion
+COPY config.yaml .
+ENV PYTHONUNBUFFERED=1
+CMD ["python", "-m", "ingestion.coinbase_producer"]

@@ -1,0 +1,4 @@
+websockets>=12
+requests>=2.31
+confluent-kafka>=2.3
+pyyaml>=6

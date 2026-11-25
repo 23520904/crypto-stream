@@ -1,0 +1,57 @@
+# ===== Cấu hình trung tâm cho toàn bộ hệ thống =====
+kafka:
+  bootstrap: "localhost:9092"          # ghi đè bằng biến môi trường KAFKA_BOOTSTRAP
+  topics: {ticks: ticks, events: ticks_events, bench: ticks_bench}
+  partitions: 2
+  retention_days: 60                   # > 45 ngày thu thập
+
+coinbase:
+  ws_url: "wss://ws-feed.exchange.coinbase.com"
+  rest_url: "https://api.exchange.coinbase.com"
+  products: ["BTC-USD", "ETH-USD"]
+  gold_proxy: "PAXG-USD"               # token vàng, dùng làm đặc trưng 'gold' ở speed layer; null để tắt
+  heartbeat_timeout_s: 10              # không nhận được message nào trong 10s => kết nối lại
+  backfill: true                       # tải bù các trade bị mất qua REST
+  backfill_max_trades: 20000
+
+paths:
+  data: data
+  raw: data/raw
+  artifacts: artifacts
+  results: results
+  stream: data/stream
+  metrics: data/metrics
+  checkpoints: data/checkpoints
+  bench: data/bench
+
+data:
+  tickers: {BTC: "BTC-USD", ETH: "ETH-USD", GOLD: "GC=F"}   # GC=F = vàng futures (thay thế LBMA)
+  start: "2013-04-29"
+  kaggle:                              # (tuỳ chọn) CSV Kaggle để lấy lịch sử từ 2013
+    BTC: data/raw/kaggle/coin_Bitcoin.csv
+    ETH: data/raw/kaggle/coin_Ethereum.csv
+
+batch:
+  window: 6                            # đầu vào 6 điểm
+  horizon: 5                           # dự báo 5 bước (chiến lược direct)
+  scaler_fit: train                    # min-max fit trên tập train (đúng mô tả đề tài); đổi 'all' để thử như bài báo
+  val_ratio: 0.1
+  epochs: 200
+  lr: 0.001
+  batch_size: 32
+  patience: 20
+  runs: 30
+  hidden: {BD-LSTM: 100, Conv-LSTM: 20, MLP: 20}
+  experiments:
+    "1": {mode: ratio, end: "2021-06-01", train_ratio: 0.7}                       # Experiment 1 (pre-COVID train)
+    "2": {mode: dates, train: ["2020-03-01", "2023-01-09"], test: ["2023-01-10", "2024-04-01"]}
+    "deploy": {mode: ratio, end: null, train_ratio: 0.9, scaler_fit: all, runs: 3}  # huấn luyện để xuất cho speed layer
+
+streaming:
+  candle: "1 minute"
+  watermark: "15 seconds"
+  trigger_seconds: 5
+  arima_order: [1, 0, 1]
+  arima_history: 120
+  arima_min_history: 60
+  keep_minutes: 600
